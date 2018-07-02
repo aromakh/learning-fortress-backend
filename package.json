@@ -1,0 +1,16 @@
+{
+  "name": "learning-fortress-backend",
+  "version": "1.0.0",
+  "description": "The backend for the Learning Fortress system.",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node index.js"
+  },
+  "author": "William Gooch",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^5.2.0",
+    "restify": "^7.2.1"
+  }
+}

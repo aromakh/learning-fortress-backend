@@ -4,6 +4,7 @@
   "description": "The backend for the Learning Fortress system.",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js"
     "prestart": "npm install",
     "start": "node index.js"
   },
@@ -11,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "firebase": "^5.2.0",
+    "firebase-admin": "^5.12.1",
     "restify": "^7.2.1"
   }
 }

@@ -1,4 +1,15 @@
-var restify = require('restify');
+const restify = require('restify');
+const admin = require('firebase-admin');
+
+const servicePath = require('./key/learning-fortress-keys.js')
+
+var port = process.env.PORT || 3000;
+
+admin.initializeApp({
+    credential: admin.credential.cert(servicePath),
+    databaseURL: 'https://learning-fortress.firebaseio.com'
+});
+var db = admin.firestore();
 
 var server = restify.createServer({
     name: 'learning-fortress-backend',
@@ -14,6 +25,23 @@ server.get('/hello', function(req, res, next) {
     return next();
 })
 
-server.listen(8080, function() {
+server.get('/brick/:id', (req, res, next) => {
+    db.collection('bricks').doc(req.params.id).get()
+        .then((b) => {
+            brick = b.data();
+            Promise.all(brick.questions.map(async (question, i) => {
+                await question.component.get().then((component) => {
+                    brick.questions[i].component = component.data();
+                })
+            })).then(() => {
+                brick.pallet.get().then((pallet) => {
+                    brick.pallet = pallet.data();
+                    res.send(brick);
+                })
+            });
+        });
+});
+
+server.listen(port, function() {
     console.log("%s listening at %s", server.name, server.url);
 });

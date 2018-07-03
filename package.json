@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "prestart": "npm install",
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "author": "William Gooch",
   "license": "ISC",
   "dependencies": {
     "firebase": "^5.2.0",
+    "firebase-admin": "^5.12.1",
     "restify": "^7.2.1"
   }
 }

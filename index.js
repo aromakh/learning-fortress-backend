@@ -1,7 +1,9 @@
 const restify = require('restify');
 const admin = require('firebase-admin');
 
-const servicePath = require('./key/learning-fortress-firebase-adminsdk-1qpqj-4f47ca143b.json')
+const servicePath = require('./key/learning-fortress-keys.js')
+
+var port = process.env.PORT || 3000;
 
 admin.initializeApp({
     credential: admin.credential.cert(servicePath),
@@ -40,6 +42,6 @@ server.get('/brick/:id', (req, res, next) => {
         });
 });
 
-server.listen(8080, function() {
+server.listen(port, function() {
     console.log("%s listening at %s", server.name, server.url);
 });

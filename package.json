@@ -4,8 +4,9 @@
   "description": "The backend for the Learning Fortress system.",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js"
     "prestart": "npm install",
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "author": "William Gooch",
   "license": "ISC",

@@ -32,7 +32,10 @@ server.get('/brick/:id', (req, res, next) => {
                     brick.questions[i].component = component.data();
                 })
             })).then(() => {
-                res.send(brick);
+                brick.pallet.get().then((pallet) => {
+                    brick.pallet = pallet.data();
+                    res.send(brick);
+                })
             });
         });
 });

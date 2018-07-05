@@ -29,6 +29,7 @@ server.get('/hello', function(req, res, next) {
 })
 
 server.get('/brick/:id', (req, res, next) => {
+    // TODO: Change header to environment variable.
     res.header('Access-Control-Allow-Origin', '*');
     db.collection('bricks').doc(req.params.id).get()
         .then((b) => {

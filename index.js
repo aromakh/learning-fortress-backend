@@ -34,16 +34,10 @@ server.get('/brick/:id', (req, res, next) => {
     db.collection('bricks').doc(req.params.id).get()
         .then((b) => {
             brick = b.data();
-            Promise.all(brick.questions.map(async (question, i) => {
-                await question.component.get().then((component) => {
-                    brick.questions[i].component = component.data();
-                })
-            })).then(() => {
-                brick.pallet.get().then((pallet) => {
-                    brick.pallet = pallet.data();
-                    res.send(brick);
-                })
-            });
+            brick.pallet.get().then((pallet) => {
+                brick.pallet = pallet.data();
+                res.send(brick);
+            })
         });
 });
 

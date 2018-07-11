@@ -36,6 +36,7 @@ server.get('/brick/:id', (req, res, next) => {
             brick = b.data();
             brick.pallet.get().then((pallet) => {
                 brick.pallet = pallet.data();
+                brick.pallet.bricks = [];
                 res.send(brick);
             })
         });

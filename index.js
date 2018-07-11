@@ -42,6 +42,20 @@ server.get('/brick/:id', (req, res, next) => {
         });
 });
 
+server.get('/studentbrick/:id', (req, res, next) => {
+    // TODO: Change header to environment variable.
+    res.header('Access-Control-Allow-Origin', '*');
+    db.collection('studentbricks').doc(req.params.id).get()
+        .then((b) => {
+            studentbrick = b.data();
+            studentbrick.brick.get().then((brick) => {
+                studentbrick.brick = brick.data();
+                studentbrick.brick.pallet = null;
+                res.send(studentbrick);
+            })
+        });
+});
+
 server.listen(port, function() {
     console.log("%s listening at %s", server.name, server.url);
 });

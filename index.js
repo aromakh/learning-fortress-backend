@@ -3,11 +3,9 @@ const admin = require('firebase-admin');
 
 const servicePath = require('./key/learning-fortress-keys.js')
 
-
-console.log(process.env.private_key);
 var port = process.env.PORT || 3000;
 
-console.log(servicePath.keys);
+
 admin.initializeApp({
     credential: admin.credential.cert(servicePath.keys),
     databaseURL: 'https://learning-fortress.firebaseio.com'

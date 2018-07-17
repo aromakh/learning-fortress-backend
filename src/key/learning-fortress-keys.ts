@@ -1,4 +1,10 @@
-exports.keys = {
+import * as dotenv from 'dotenv';
+
+if(process.env.NODE_ENV == "dev") {
+  dotenv.load();
+}
+
+export let keys : any = {
   "type": "service_account",
   "project_id": process.env.project_id,
   "private_key_id": process.env.private_key_id,

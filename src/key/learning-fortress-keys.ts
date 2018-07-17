@@ -1,5 +1,8 @@
 import * as dotenv from 'dotenv';
-dotenv.load();
+
+if(process.env.NODE_ENV == "dev") {
+  dotenv.load();
+}
 
 export let keys : any = {
   "type": "service_account",

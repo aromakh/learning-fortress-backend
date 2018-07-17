@@ -116,7 +116,7 @@ server.post('/brickattempt', (req, res, next) => {
     console.log(req.body);
     let data = req.body;
 
-
+    // TODO: Marking Process
 
     let brick = Object.assign({}, data);
     delete brick.answers;

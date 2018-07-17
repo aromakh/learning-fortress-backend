@@ -5,14 +5,15 @@
             {
                 "type": "node",
                 "request": "attach",
-                "name": "start",
+                "name": "backend-attach",
                 "port": 5858
             },
             {
                 "type": "node",
                 "request": "launch",
-                "name": "Launch Program",
-                "program": "${workspaceRoot}\\index.js"
+                "name": "backend-watch",
+                "program": "${workspaceRoot}/src/index.js",
+                "preLaunchTask": "tsc:watch"
             }
         ]
     }

@@ -2,17 +2,26 @@
   "name": "learning-fortress-backend",
   "version": "1.0.0",
   "description": "The backend for the Learning Fortress system.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "postinstall": "tsc",
     "prestart": "npm install",
-    "start": "node index.js"
+    "start": "node src/index.js",
+    "predev": "tsc",
+    "dev": "node src/index.js"
   },
   "author": "William Gooch",
   "license": "ISC",
   "dependencies": {
+    "@types/dotenv": "^4.0.3",
+    "@types/restify": "^7.2.3",
     "firebase": "^5.2.0",
     "firebase-admin": "^5.12.1",
-    "restify": "^7.2.1"
+    "restify": "^7.2.1",
+    "typescript": "^2.9.2"
+  },
+  "devDependencies": {
+    "dotenv": "^6.0.0",
+    "ts-node": "^7.0.0"
   }
 }

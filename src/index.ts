@@ -27,12 +27,12 @@ const cors = corsMiddleware({
     exposeHeaders: []
 });
 
-server.pre(cors.preflight);
-server.use(cors.actual);
-
 server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
+
+server.pre(cors.preflight);
+server.use(cors.actual);
 
 server.get('/hello', function(req, res, next) {
     res.send({ message: 'Hello World!' });

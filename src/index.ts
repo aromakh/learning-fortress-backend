@@ -1,4 +1,5 @@
 import * as restify from 'restify';
+import * as corsMiddleware from 'restify-cors-middleware';
 import firebase from 'firebase/app';
 import * as admin from 'firebase-admin';
 
@@ -18,6 +19,16 @@ var server = restify.createServer({
     name: 'learning-fortress-backend',
     version: '1.0.0'
 });
+
+const cors = corsMiddleware({
+    preflightMaxAge: 60,
+    origins: ['*'],
+    allowHeaders: ['Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'X-Api-Version'],
+    exposeHeaders: []
+});
+
+server.pre(cors.preflight);
+server.use(cors.actual);
 
 server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());

@@ -1,6 +1,8 @@
 // This is the representation of the data structures in the app.
 
-export abstract class Comp {
+import * as firebase from 'firebase';
+
+export class Comp {
     name: string;
     component: any;
     data: any;

@@ -20,11 +20,12 @@ var server = restify.createServer({
     version: '1.0.0'
 });
 
+// TODO: Change to environment variable
 const cors = corsMiddleware({
     preflightMaxAge: 6000,
     origins: ['*'],
     allowHeaders: ['Content-Type'],
-    exposeHeaders: []
+    exposeHeaders: [],
 });
 
 server.use(restify.plugins.acceptParser(server.acceptable));
@@ -40,8 +41,6 @@ server.get('/hello', function(req, res, next) {
 })
 
 server.get('/brick/:id', (req, res, next) => {
-    // TODO: Change header to environment variable.
-    res.header('Access-Control-Allow-Origin', '*');
     let brickRef = db.collection('bricks').doc(req.params.id);
     let brick: any;
     brickRef.get()
@@ -74,7 +73,6 @@ server.get('/brick/:id', (req, res, next) => {
 
 server.get('/brickattempt/:id', (req, res, next) => {
     // TODO: Change header to environment variable.
-    res.header('Access-Control-Allow-Origin', '*');
     let attemptRef = db.collection('brickattempts').doc(req.params.id);
     let attempt: any;
     attemptRef.get()
@@ -123,7 +121,6 @@ server.get('/brickattempt/:id', (req, res, next) => {
 
 server.post('/brickattempt', (req, res, next) => {
     // TODO: Change header to environment variable.
-    res.header('Access-Control-Allow-Origin', '*');
     console.log(req.body);
     let data = req.body;
 

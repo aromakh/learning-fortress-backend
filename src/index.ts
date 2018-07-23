@@ -64,6 +64,8 @@ server.get('/brick/:id', (req, res, next) => {
 server.get('/brickattempt/:id', (req, res, next) => {
     // TODO: Change header to environment variable.
     res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     let attemptRef = db.collection('brickattempts').doc(req.params.id);
     let attempt: any;
     attemptRef.get()
@@ -113,6 +115,8 @@ server.get('/brickattempt/:id', (req, res, next) => {
 server.post('/brickattempt', (req, res, next) => {
     // TODO: Change header to environment variable.
     res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     console.log(req.body);
     let data = req.body;
 

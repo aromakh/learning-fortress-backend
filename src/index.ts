@@ -20,7 +20,6 @@ var server = restify.createServer({
     version: '1.0.0'
 });
 
-// TODO: Change to environment variable
 const cors = corsMiddleware({
     preflightMaxAge: 6000,
     origins: JSON.parse(process.env.accept_origin),

@@ -15,9 +15,11 @@
   "dependencies": {
     "@types/dotenv": "^4.0.3",
     "@types/restify": "^7.2.3",
+    "@types/restify-cors-middleware": "^1.0.1",
     "firebase": "^5.2.0",
     "firebase-admin": "^5.12.1",
     "restify": "^7.2.1",
+    "restify-cors-middleware": "^1.1.1",
     "typescript": "^2.9.2"
   },
   "devDependencies": {

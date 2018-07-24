@@ -1,4 +1,5 @@
 import * as restify from 'restify';
+import * as corsMiddleware from 'restify-cors-middleware';
 import firebase from 'firebase/app';
 import * as admin from 'firebase-admin';
 
@@ -19,9 +20,19 @@ var server = restify.createServer({
     version: '1.0.0'
 });
 
+const cors = corsMiddleware({
+    preflightMaxAge: 6000,
+    origins: JSON.parse(process.env.accept_origin),
+    allowHeaders: ['Content-Type'],
+    exposeHeaders: [],
+});
+
 server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
+
+server.pre(cors.preflight);
+server.use(cors.actual);
 
 server.get('/hello', function(req, res, next) {
     res.send({ message: 'Hello World!' });
@@ -29,8 +40,6 @@ server.get('/hello', function(req, res, next) {
 })
 
 server.get('/brick/:id', (req, res, next) => {
-    // TODO: Change header to environment variable.
-    res.header('Access-Control-Allow-Origin', '*');
     let brickRef = db.collection('bricks').doc(req.params.id);
     let brick: any;
     brickRef.get()
@@ -63,7 +72,6 @@ server.get('/brick/:id', (req, res, next) => {
 
 server.get('/brickattempt/:id', (req, res, next) => {
     // TODO: Change header to environment variable.
-    res.header('Access-Control-Allow-Origin', '*');
     let attemptRef = db.collection('brickattempts').doc(req.params.id);
     let attempt: any;
     attemptRef.get()
@@ -112,7 +120,6 @@ server.get('/brickattempt/:id', (req, res, next) => {
 
 server.post('/brickattempt', (req, res, next) => {
     // TODO: Change header to environment variable.
-    res.header('Access-Control-Allow-Origin', '*');
     console.log(req.body);
     let data = req.body;
 

@@ -23,7 +23,7 @@ var server = restify.createServer({
 // TODO: Change to environment variable
 const cors = corsMiddleware({
     preflightMaxAge: 6000,
-    origins: ['*'],
+    origins: JSON.parse(process.env.accept_origin),
     allowHeaders: ['Content-Type'],
     exposeHeaders: [],
 });

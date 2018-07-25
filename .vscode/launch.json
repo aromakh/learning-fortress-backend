@@ -13,10 +13,7 @@
                 "request": "launch",
                 "name": "backend-watch",
                 "program": "${workspaceRoot}/src/index.js",
-                "preLaunchTask": "tsc:watch",
-                "env": {
-                    "NODE_ENV": "dev"
-                }
+                "preLaunchTask": "tsc:watch"
             }
         ]
     }

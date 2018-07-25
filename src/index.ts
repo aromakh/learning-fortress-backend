@@ -1,9 +1,16 @@
+import * as dotenv from 'dotenv';
+
+if(process.env.NODE_ENV == "dev") {
+  dotenv.load();
+}
+
 import * as restify from 'restify';
 import * as corsMiddleware from 'restify-cors-middleware';
 import firebase from 'firebase/app';
 import * as admin from 'firebase-admin';
 
 import * as servicePath from './key/learning-fortress-keys';
+import { isValid } from './auth';
 import { Pallet, Brick, BrickAttempt } from './bricks';
 import { DocumentSnapshot, DocumentReference, QuerySnapshot } from '@google-cloud/firestore';
 
@@ -40,6 +47,12 @@ server.get('/hello', function(req, res, next) {
 })
 
 server.get('/brick/:id', (req, res, next) => {
+    if(!isValid(req)) {
+        res.status(401);
+        res.send({ "message": "Unauthorized to access the server." });
+        return;
+    }
+
     let brickRef = db.collection('bricks').doc(req.params.id);
     let brick: any;
     brickRef.get()
@@ -71,6 +84,12 @@ server.get('/brick/:id', (req, res, next) => {
 });
 
 server.get('/brickattempt/:id', (req, res, next) => {
+    if(!isValid(req)) {
+        res.status(401);
+        res.send({ "message": "Unauthorized to access the server." });
+        return;
+    }
+
     // TODO: Change header to environment variable.
     let attemptRef = db.collection('brickattempts').doc(req.params.id);
     let attempt: any;
@@ -119,6 +138,12 @@ server.get('/brickattempt/:id', (req, res, next) => {
 });
 
 server.post('/brickattempt', (req, res, next) => {
+    if(!isValid(req)) {
+        res.status(401);
+        res.send({ "message": "Unauthorized to access the server." });
+        return;
+    }
+
     // TODO: Change header to environment variable.
     console.log(req.body);
     let data = req.body;

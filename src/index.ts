@@ -1,9 +1,16 @@
+import * as dotenv from 'dotenv';
+
+if(process.env.NODE_ENV == "dev") {
+  dotenv.load();
+}
+
 import * as restify from 'restify';
 import * as corsMiddleware from 'restify-cors-middleware';
 import firebase from 'firebase/app';
 import * as admin from 'firebase-admin';
 
 import * as servicePath from './key/learning-fortress-keys';
+import { isValid } from './auth';
 import { Pallet, Brick, BrickAttempt } from './bricks';
 import { DocumentSnapshot, DocumentReference, QuerySnapshot } from '@google-cloud/firestore';
 
@@ -23,13 +30,23 @@ var server = restify.createServer({
 const cors = corsMiddleware({
     preflightMaxAge: 6000,
     origins: JSON.parse(process.env.accept_origin),
-    allowHeaders: ['Content-Type'],
-    exposeHeaders: [],
+    allowHeaders: ['Content-Type', 'Authorization'],
+    exposeHeaders: ['Authorization'],
 });
 
 server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
+
+server.use((req, res, next) => {
+    if(!isValid(req)) {
+        res.status(401);
+        res.send({ "message": "Unauthorized to access the server." });
+        return;
+    } else {
+        return next();
+    }
+})
 
 server.pre(cors.preflight);
 server.use(cors.actual);

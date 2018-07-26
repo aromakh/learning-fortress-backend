@@ -56,6 +56,7 @@ export class StudentPallet {
 }
 
 export class Student {
+    uid: string;
     name: string;
     pallets: StudentPallet[];
 }
@@ -67,6 +68,7 @@ export class Class {
 }
 
 export class Teacher {
+    uid: string;
     name: string;
     classes: Class[];
 }

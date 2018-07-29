@@ -63,7 +63,8 @@ server.get('/brick/:id', (req, res, next) => {
             if(palletSnapshot.exists) {
                 brick.pallet = palletSnapshot.data();
                 brick.pallet.bricks = [];
-                res.send(brick as Brick);
+                brick._path = brickRef.path;
+                res.send(brick);
             } else {
                 res.send({ message: "Document not found" });
             }
@@ -111,7 +112,8 @@ server.get('/brickattempt/:id', (req, res, next) => {
             if(brickSnapshot.exists) {
                 attempt.brick = brickSnapshot.data();
                 attempt.brick.pallet = null;
-                res.send(attempt as BrickAttempt);
+                attempt._path = attemptRef.path;
+                res.send(attempt);
             } else {
                 res.send({ message: "Document not found" });
             }

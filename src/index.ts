@@ -46,6 +46,7 @@ server.get('/brick/:id', (req, res, next) => {
         .then((brickSnapshot: DocumentSnapshot) => {
             if(brickSnapshot.exists) {
                 brick = brickSnapshot.data();
+                brick._path = brickSnapshot.ref.path;
                 return brickRef.collection("questions").orderBy("number", "asc").get();
             } else {
                 res.send({ message: "Document not found" });
@@ -53,7 +54,11 @@ server.get('/brick/:id', (req, res, next) => {
         })
         .then((questionsSnapshot: QuerySnapshot) => {
             if(!questionsSnapshot.empty) {
-                brick.questions = questionsSnapshot.docs.map((questionSnapshot : DocumentSnapshot) => questionSnapshot.data());
+                brick.questions = questionsSnapshot.docs.map((questionSnapshot : DocumentSnapshot) => {
+                    var qstn = questionSnapshot.data()
+                    qstn._path = questionSnapshot.ref.path;
+                    return qstn;
+                });
                 return brick.pallet.get()
             } else {
                 res.send({ message: "Collection has no items" });
@@ -63,7 +68,7 @@ server.get('/brick/:id', (req, res, next) => {
             if(palletSnapshot.exists) {
                 brick.pallet = palletSnapshot.data();
                 brick.pallet.bricks = [];
-                brick._path = brickRef.path;
+                brick.pallet._path = palletSnapshot.ref.path;
                 res.send(brick);
             } else {
                 res.send({ message: "Document not found" });
@@ -79,6 +84,7 @@ server.get('/brickattempt/:id', (req, res, next) => {
         .then((attemptSnapshot: DocumentSnapshot) => {
             if(attemptSnapshot.exists) {
                 attempt = attemptSnapshot.data();
+                attempt._path = attemptSnapshot.ref.path;
                 return attemptRef.collection('answers').orderBy("number", "asc").get();
             } else {
                 res.send({ message: "Document not found" });
@@ -86,11 +92,16 @@ server.get('/brickattempt/:id', (req, res, next) => {
         })
         .then((answersSnapshot: QuerySnapshot) => {
             if(!answersSnapshot.empty) {
-                attempt.answers = answersSnapshot.docs.map((answerSnapshot: DocumentSnapshot) => answerSnapshot.data());
+                attempt.answers = answersSnapshot.docs.map((answerSnapshot: DocumentSnapshot) => {
+                    var atmpt = answerSnapshot.data()
+                    atmpt._path = answerSnapshot.ref.path;
+                    return atmpt;
+                });
                 return Promise.all(answersSnapshot.docs.map((answerSnapshot: DocumentSnapshot, index: number) => {
                     return answerSnapshot.data().question.get()
                         .then((questionSnapshot: DocumentSnapshot) => {
                             attempt.answers[index].question = questionSnapshot.data();
+                            attempt.answers[index].question._path = questionSnapshot.ref.path;
                         })
                 }));
             } else {
@@ -103,6 +114,7 @@ server.get('/brickattempt/:id', (req, res, next) => {
         .then((studentSnapshot: DocumentSnapshot) => {
             if(studentSnapshot.exists) {
                 attempt.student = studentSnapshot.data();
+                attempt.student._path = studentSnapshot.ref.path;
                 return attempt.brick.get();
             } else {
                 res.send({ message: "Document not found" })
@@ -112,7 +124,7 @@ server.get('/brickattempt/:id', (req, res, next) => {
             if(brickSnapshot.exists) {
                 attempt.brick = brickSnapshot.data();
                 attempt.brick.pallet = null;
-                attempt._path = attemptRef.path;
+                attempt.brick._path = brickSnapshot.ref.path;
                 res.send(attempt);
             } else {
                 res.send({ message: "Document not found" });

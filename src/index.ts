@@ -1,6 +1,5 @@
 import * as restify from 'restify';
 import * as corsMiddleware from 'restify-cors-middleware';
-import firebase from 'firebase/app';
 import * as admin from 'firebase-admin';
 
 import * as servicePath from './key/learning-fortress-keys';
@@ -8,12 +7,6 @@ import { Pallet, Brick, BrickAttempt } from './bricks';
 import { DocumentSnapshot, DocumentReference, QuerySnapshot } from '@google-cloud/firestore';
 
 var port = process.env.PORT || 3000;
-
-admin.initializeApp({
-    credential: admin.credential.cert(servicePath.keys),
-    databaseURL: 'https://learning-fortress.firebaseio.com'
-});
-var db = admin.firestore();
 
 var server = restify.createServer({
     name: 'learning-fortress-backend',
@@ -34,6 +27,7 @@ server.use(restify.plugins.bodyParser());
 server.pre(cors.preflight);
 server.use(cors.actual);
 
+/*
 server.get('/hello', function(req, res, next) {
     res.send({ message: 'Hello World!' });
     return next();
@@ -161,6 +155,7 @@ server.post('/brickattempt', (req, res, next) => {
             res.send(reason);
         })
 })
+*/
 
 server.listen(port, function() {
     console.log("%s listening at %s", server.name, server.url);

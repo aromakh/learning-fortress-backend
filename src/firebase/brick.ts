@@ -19,34 +19,6 @@ exports.getBricks = function () {
 }
 
 /**
- * Get one brick by id
- * @param {string} brickId Brick id.
- * @returns {Object} brick
- */
-exports.getBrick = function (brickId) {
-  return brickRef(brickId).get().then(brick => {
-    if (!brick.exists) {
-      return null;
-    } else {
-      return brick.data();
-    }
-  });
-}
-
-exports.getBrick = function (brickId) {
-  return brickRef(brickId).get().then(brickSnapshot => {
-    if (!brickSnapshot.exists) {
-      return null;
-    } else {
-      const brick = brickSnapshot.data();
-      brick.id = brickSnapshot.id;
-      brick._path = brickSnapshot.ref.path;
-      return brick;
-    }
-  });
-}
-
-/**
  * Create brick
  * @param {object} Brick object
  * @return {string} Brick Id

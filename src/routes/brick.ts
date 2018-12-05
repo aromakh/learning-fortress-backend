@@ -4,6 +4,7 @@ var brickFirebase = require('../firebase/brick'),
   router = new (require('restify-router')).Router();
 
 import { ResponseBody } from '../bricks';
+import { response } from 'spdy';
 
 function sendSuccess(res, message, data = null) {
   res.send({message: message, success: true, data: data} as ResponseBody);
@@ -15,46 +16,21 @@ function sendException(res, message) {
 
 // router functions
 router.get('', function(req, res) {
-  brickFirebase.getBricks().then(bricks => res.send(bricks));
+  brickFirebase.getBricks()
+  .then(bricks => sendSuccess(res, '', bricks))
+  .catch((message: string) => sendException(res, message));
 });
 
 router.post('', function(req, res) {
-  brickFirebase.createBrick(req.body).then(id => res.send('brick created ' + id));
+  brickFirebase.createBrick(req.body)
+  .then(id => sendSuccess(res, 'brick created ' + id))
+  .catch((message: string) => sendException(res, message));
 });
 
 router.get('/:brickId', function(req, res) {
-  let brickRef = db.collection('bricks').doc(req.params.brickId);
-  let brick;
-  brickRef.get()
-  .then((brickSnapshot) => {
-    if (brickSnapshot.exists) {
-      brick = brickSnapshot.data();
-      brick._path = brickSnapshot.ref.path;
-      return brickRef.collection("questions").orderBy("number", "asc").get();
-    } else {
-      res.send({ message: "Document not found" });
-    }
-  }).then((questionsSnapshot) => {
-    if (!questionsSnapshot.empty) {
-      brick.questions = questionsSnapshot.docs.map((questionSnapshot) => {
-        var qstn = questionSnapshot.data();
-        qstn._path = questionSnapshot.ref.path;
-        return qstn;
-      });
-      return brick.pallet.get();
-    } else {
-      res.send({ message: "Collection has no items" });
-    }
-  }).then((palletSnapshot) => {
-    if (palletSnapshot.exists) {
-      brick.pallet = palletSnapshot.data();
-      brick.pallet.bricks = [];
-      brick.pallet._path = palletSnapshot.ref.path;
-      res.send(brick);
-    } else {
-      res.send({ message: "Document not found" });
-    }
-  });
+  brickFirebase.getFullBrick(req.params.brickId)
+  .then((brick) => res.send(brick))
+  .catch((message) => res.send(message));
 });
 
 router.put('/:brickId', function(req, res) {
@@ -90,7 +66,7 @@ router.put('/:brickId/question/:questionId', function (req, res) {
 
 router.del('/:brickId/question/:questionId', function (req, res) {
   questionFirebase.deleteQuestion(req.params.brickId, req.params.questionId)
-  .then(() => sendSuccess(res, 'Question deleted by in Id = '))
+  .then(() => sendSuccess(res, 'Question deleted by in Id = ' + req.params.questionId))
   .catch((message: string) => sendException(res, message));
 });
 

@@ -143,3 +143,23 @@ exports.getQuestion = async function (brickId: string, questionId: string) {
     return new Promise((res, rej) => rej('Question with Id = ' + questionId + ' doen`t exist'));
   }
 };
+
+/**
+ * Get Questions of Brick
+ * @param {string} brickId
+ * @returns {array} questions
+ */
+exports.getBrickQuestions = async function (brickId: string) {
+  return questionsRef(brickId).orderBy("number", "asc").get()
+  .then((questionsSnapshot) => {
+    if (!questionsSnapshot.empty) {
+      return questionsSnapshot.docs.map((questionSnapshot) => {
+        var qstn = questionSnapshot.data();
+        qstn._path = questionSnapshot.ref.path;
+        return qstn;
+      });
+    } else {
+      return [];
+    }
+  })
+}

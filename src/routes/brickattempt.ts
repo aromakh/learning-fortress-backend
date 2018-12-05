@@ -6,7 +6,7 @@ router.get('/:id', (req, res, next) => {
     let attemptRef = db.collection('brickattempts').doc(req.params.id);
     let attempt;
     attemptRef.get()
-        .then((attemptSnapshot) => {
+    .then((attemptSnapshot) => {
         if (attemptSnapshot.exists) {
             attempt = attemptSnapshot.data();
             attempt._path = attemptSnapshot.ref.path;
@@ -15,8 +15,7 @@ router.get('/:id', (req, res, next) => {
         else {
             res.send({ message: "Document not found" });
         }
-    })
-        .then((answersSnapshot) => {
+    }).then((answersSnapshot) => {
         if (!answersSnapshot.empty) {
             attempt.answers = answersSnapshot.docs.map((answerSnapshot) => {
                 var atmpt = answerSnapshot.data();
@@ -34,11 +33,9 @@ router.get('/:id', (req, res, next) => {
         else {
             res.send({ message: "Collection has no items" });
         }
-    })
-        .then(() => {
+    }).then(() => {
         return attempt.student.get();
-    })
-        .then((studentSnapshot) => {
+    }).then((studentSnapshot) => {
         if (studentSnapshot.exists) {
             attempt.student = studentSnapshot.data();
             attempt.student._path = studentSnapshot.ref.path;
@@ -47,8 +44,7 @@ router.get('/:id', (req, res, next) => {
         else {
             res.send({ message: "Document not found" });
         }
-    })
-        .then((brickSnapshot) => {
+    }).then((brickSnapshot) => {
         if (brickSnapshot.exists) {
             attempt.brick = brickSnapshot.data();
             attempt.brick.pallet = null;
@@ -73,13 +69,11 @@ router.post('', (req, res, next) => {
         return Promise.all(data.answers.map((answerData, index) => {
             answersRef.add(answerData);
         }));
-    })
-        .then(() => {
+    }).then(() => {
         console.log("added thing");
         res.status(200);
         res.send({ message: "Operation successful" });
-    })
-        .catch((reason) => {
+    }).catch((reason) => {
         res.send(reason);
     });
 });

@@ -12,7 +12,7 @@ export class Question {
     number: number;
 }
 
-export class Brick {
+export interface Brick {
     title: string;
     brief: string;
     prep: string;
@@ -27,9 +27,25 @@ export class Brick {
     questions: Question[];
 }
 
-export class Pallet {
+export interface Pallet {
     name: string;
+    _path: string;
     bricks: Brick[];
+}
+
+export interface FirebaseSnapshot {
+    // reference things
+    exists: boolean;
+    ref: { path: string }
+}
+
+export interface PalletSnapshot extends Pallet, FirebaseSnapshot { 
+    get(): Promise<PalletSnapshot>;
+    data(): PalletSnapshot;
+}
+export interface BrickSnapshot extends Brick, FirebaseSnapshot {
+    data(): BrickSnapshot;
+    pallet: PalletSnapshot;
 }
 
 export class ComponentAttempt {

@@ -1,7 +1,7 @@
 import * as restify from 'restify';
 import * as corsMiddleware from 'restify-cors-middleware';
 
-import { Pallet, Brick, BrickAttempt } from './bricks';
+import { Pallet, Brick, BrickAttempt } from './models/bricks';
 import { DocumentSnapshot, DocumentReference, QuerySnapshot } from '@google-cloud/firestore';
 
 var port = process.env.PORT || 3000;

@@ -3,7 +3,7 @@ var brickFirebase = require('../firebase/brick'),
   db = require('../firebase/firestore'),
   router = new (require('restify-router')).Router();
 
-import { ResponseBody } from '../bricks';
+import { ResponseBody } from '../models/bricks';
 import { response } from 'spdy';
 
 function sendSuccess(res, message, data = null) {

@@ -1,8 +1,9 @@
-import { Brick } from "../bricks";
+import { Brick, BrickSnapshot } from "../models/bricks";
 
 var firestore = require('./firestore'),
   bricksRef = firestore.collection('bricks'),
-  questionFirebase = require('../firebase/question');
+  palletFirebase = require('./pallet'),
+  questionFirebase = require('./question');
 
 /**
  * Get Brick Reference
@@ -17,7 +18,7 @@ function brickRef(brickId) { return bricksRef.doc(brickId); }
  * @returns {Promise} Promise with Brick
  */
 function getBrick(brickId: string) {
-  return brickRef(brickId).get().then(brick => brick.data());
+  return brickRef(brickId).get().then((brick: BrickSnapshot) => brick.data());
 }
 
 /**
@@ -48,20 +49,15 @@ exports.getFullBrick = async function (brickId: string) {
 
   // get questions
   const questions = await questionFirebase.getBrickQuestions(brickId);
-  if (questions.length == 0) { return new Promise((res, rej) => rej('Collection haven`t items'))}
+  if (questions.length == 0) { return new Promise((res, rej) => rej('Collection has no items'))}
   brick.questions = questions;
 
   // get pallet
-  return brick.pallet.get().then((palletSnapshot) => {
-    if (palletSnapshot.exists) {
-      brick.pallet = palletSnapshot.data();
-      brick.pallet.bricks = [];
-      brick.pallet._path = palletSnapshot.ref.path;
-      return brick;
-    } else {
-      throw "Document not found";
-    }
-  });
+  const pallet = palletFirebase.getPalletFromBrick(brick);
+  if (!pallet) { return new Promise((res, rej) => rej('Document Pallet not found')); }
+  brick.pallet = pallet;
+  
+  return brick;
 }
 
 /**
@@ -84,14 +80,19 @@ exports.getBricks = function () {
  * @param {object} Brick object
  * @return {string} Brick Id
  */
-exports.createBrick = function (brickObj: Brick) {
+exports.createBrick = async function (brickObj: Brick) {
   brickObj.avgScore = 0;
   brickObj.creationDate = new Date();
+  brickObj.totalUsers = 0;
 
   // check brick data
   if (!brickObj.brief) { return new Promise((res, rej) => rej('Brief is required')); }
   if (!brickObj.title) { return new Promise((res, rej) => rej('Title is required')); }
-
+  if (!brickObj.pallet) { return new Promise((res, rej) => rej('Pallet is required')); }
+  
+  const palletReference = await palletFirebase.getPalletReference(brickObj.pallet);
+  if (!palletReference) { return new Promise((res, rej) => rej('Pallet not found')); }
+  brickObj.pallet = palletReference;
   return bricksRef.add(brickObj).then(ref => ref.id);
 }
 

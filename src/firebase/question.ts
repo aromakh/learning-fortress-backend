@@ -1,4 +1,4 @@
-import { Question } from "../bricks";
+import { Question } from "../models/bricks";
 
 var firestore = require('./firestore');
 var bricksRef = firestore.collection('bricks');

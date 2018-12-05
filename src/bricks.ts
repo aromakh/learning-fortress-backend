@@ -9,6 +9,7 @@ export abstract class Comp {
 export class Question {
     components: Comp[];
     title: string;
+    number: number;
 }
 
 export class Brick {

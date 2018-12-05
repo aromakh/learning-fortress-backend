@@ -5,7 +5,7 @@ var brickFirebase = require('../firebase/brick'),
 
 
 router.get('', function(req, res) {
-  brickFirebase.getBricks().then(bricks => res.send(bricks) );
+  brickFirebase.getBricks().then(bricks => res.send(bricks));
 });
 
 router.post('/', function(req, res) {
@@ -38,8 +38,7 @@ router.get('/:brickId', function(req, res) {
       else {
           res.send({ message: "Collection has no items" });
       }
-  })
-      .then((palletSnapshot) => {
+  }).then((palletSnapshot) => {
       if (palletSnapshot.exists) {
           brick.pallet = palletSnapshot.data();
           brick.pallet.bricks = [];
@@ -54,38 +53,37 @@ router.get('/:brickId', function(req, res) {
 
 router.put('/:brickId', function(req, res) {
   brickFirebase.updateBrick(req.params.brickId, req.body).then(id => {
-    res.send('brick updated')
+    res.send('Brick updated')
   });
 });
 
 router.del('/:brickId', function(req, res) {
-  brickFirebase.deleteBrick(req.params.brickId).then(id => res.send('brick deleted'));
+  brickFirebase.deleteBrick(req.params.brickId).then(id => res.send('Brick deleted'));
 });
 
 /* Questions */
 router.get('/:brickId/question/:questionId', function (req, res) {
-  questionFirebase.getQuestion(req.params.brickId, req.params.questionId).then(question => res.send(question));
+  questionFirebase.getQuestion(req.params.brickId, req.params.questionId)
+  .then(question => res.send(question))
+  .catch(reason => res.send(reason));
 });
 
 router.post('/:brickId/question/:questionId', function (req, res) {
   questionFirebase.createQuestion(req.params.brickId, req.params.questionId, req.body)
-  .then(id => {
-    res.send('question created')
-  }).catch(reason => {
-    res.send(reason);
-  });
+  .then(id => res.send('Question created'))
+  .catch(reason => res.send(reason));
 });
 
 router.put('/:brickId/question/:questionId', function (req, res) {
   questionFirebase.updateQuestion(req.params.brickId, req.params.questionId, req.body).then(questionId => {
-    res.send('question updated');
-  });
+    res.send('Question updated');
+  }).catch(reason => res.send(reason));
 });
 
 router.del('/:brickId/question/:questionId', function (req, res) {
-  questionFirebase.deleteQuestion(req.params.brickId, req.params.questionId).then(questionId => {
-    res.send('question deleted');
-  });
+  questionFirebase.deleteQuestion(req.params.brickId, req.params.questionId)
+  .then(() => res.send('Question deleted by in Id = ', req.params.questionId))
+  .catch(reason => res.send(reason));
 });
 
 module.exports = router

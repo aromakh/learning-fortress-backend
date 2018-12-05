@@ -1,3 +1,5 @@
+import { Question } from "../bricks";
+
 var firestore = require('./firestore');
 var bricksRef = firestore.collection('bricks');
 
@@ -10,7 +12,13 @@ function questionsRef(brickId: string) {
   return bricksRef.doc(brickId).collection('questions');
 }
 
-function questionRef(brickId, questionId) {
+/**
+ * 
+ * @param brickId Brick Id
+ * @param questionId Question Id
+ * @return {QuestionRef} reference to specific question
+ */
+function questionRef(brickId: string, questionId: string) {
   return questionsRef(brickId).doc(questionId);
 }
 
@@ -20,12 +28,12 @@ function questionRef(brickId, questionId) {
  * @param {string} questionId Question Id.
  * @returns question
  */
-function getQuestion(brickId, questionId) {
+function getQuestion(brickId: string, questionId: string) {
   return questionRef(brickId, questionId).get().then(question => question.data());
 }
 
 /**
- * Create question in brick Collection
+ * Create question in bricks Collection
  * Question require components which must be array of components
  * Each component had data and name property
  * @param {string} brickId Brick Id.
@@ -37,9 +45,9 @@ function getQuestion(brickId, questionId) {
  *         name: string
  *     ]
  * }
- * @returns questionId
+ * @returns Promise with questionId
  */
-exports.createQuestion = async function (brickId, questionId, questionObj) {
+exports.createQuestion = async function (brickId: string, questionId: string, questionObj: Question) {
   // questionId must be a string
   if (!questionId || typeof questionId !== 'string') {
     return new Promise((res, rej) => rej('Id of question must be a string'));
@@ -70,13 +78,47 @@ exports.createQuestion = async function (brickId, questionId, questionObj) {
 }
 
 /**
- * Update question
+ * Update question in bricks Collection
+ * Question require components which must be array of components
+ * Each component had data and name property
  * @param {string} brickId Brick Id.
  * @param {string} questionId Question Id.
- * @param {object} question Question object.
+ * @param {object} question Question object
+ * {
+ *     components: [
+ *         data: object
+ *         name: string
+ *     ]
+ * }
+ * @returns Promise with questionObj
  */
-exports.updateQuestion = function (brickId, questionId, questionObj) {
-  return questionRef(brickId, questionId).set(questionObj);
+exports.updateQuestion = async function (brickId: string, questionId: string, questionObj: Question) {
+  // questionId must be a string
+  if (!questionId || typeof questionId !== 'string') {
+    return new Promise((res, rej) => rej('Id of question must be a string'));
+  }
+
+  // components is required and must be an array
+  if (!questionObj.components || !Array.isArray(questionObj.components)) {
+    return new Promise((res, rej) => rej('Question hasn`t components property which is an array'));
+  }
+
+  // each component must have name and data property, name must be a string and data is an object
+  for (let i = 0; i < questionObj.components.length; i++) {
+    const component = questionObj.components[i];
+    if (!component.name || typeof component.name !== 'string') {
+      return new Promise((res, rej) => rej('component.name must be a string'));
+    }
+    if (!component.data || typeof component.data !== 'object') {
+      return new Promise((res, rej) => rej('component.data must an object'));
+    }
+  }
+
+  if (await getQuestion(brickId, questionId)) {
+    return questionRef(brickId, questionId).set(questionObj);
+  } else {
+    return new Promise((res, rej) => rej('Question with Id = ' + questionId + ' doen`t exist'));
+  }
 }
 
 /**
@@ -84,8 +126,20 @@ exports.updateQuestion = function (brickId, questionId, questionObj) {
  * @param {string} brickId Brick Id.
  * @param {string} questionId Question Id.
  */
-exports.deleteQuestion = function (brickId, questionId) {
-  return questionRef(brickId, questionId).delete();
+exports.deleteQuestion = async function (brickId: string, questionId: string) {
+  //if question with such name do not exist
+  if (await getQuestion(brickId, questionId)) {
+    return questionRef(brickId, questionId).delete();
+  } else {
+    return new Promise((res, rej) => rej('Question with Id = ' + questionId + ' doen`t exist'));
+  }
 }
 
-exports.getQuestion = getQuestion;
+exports.getQuestion = async function (brickId: string, questionId: string) {
+  const question = await getQuestion(brickId, questionId);
+  if (question) {
+    return questionRef(brickId, questionId).get().then(question => question.data());
+  } else {
+    return new Promise((res, rej) => rej('Question with Id = ' + questionId + ' doen`t exist'));
+  }
+};

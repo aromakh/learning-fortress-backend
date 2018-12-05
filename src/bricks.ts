@@ -73,3 +73,9 @@ export class Teacher {
     name: string;
     classes: Class[];
 }
+
+export class ResponseBody {
+    message: string;
+    data: any;
+    success: boolean;
+}

@@ -68,7 +68,12 @@ router.get('/:brickId/question/:questionId', function (req, res) {
 });
 
 router.post('/:brickId/question/:questionId', function (req, res) {
-  questionFirebase.createQuestion(req.params.brickId, req.body).then(id => res.send('question created'));
+  questionFirebase.createQuestion(req.params.brickId, req.params.questionId, req.body)
+  .then(id => {
+    res.send('question created')
+  }).catch(reason => {
+    res.send(reason);
+  });
 });
 
 router.put('/:brickId/question/:questionId', function (req, res) {
